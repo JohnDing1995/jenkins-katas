@@ -1,7 +1,7 @@
 pipeline {
   agent any
   stages {
-    state('pull code') {
+    stage('pull code') {
       steps{
       git branch: 'pipeline-editor', credentialsId: 'GitHub', url: 'git@github.com:JohnDing1995/jenkins-katas.git'
       stash excludes: '.git/', name: 'code'
