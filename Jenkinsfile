@@ -50,10 +50,14 @@ pipeline {
       }
       
     }
-    timeout(time: 15, unit: "MINUTES") {
-    input message: 'Do you want to approve to push to DockerHub?', ok: 'Yes'
-}
-stage ('Push to Dockerhub'){
+    def userInput
+    userInput = input(
+        id: 'Proceed1', message: 'Continue?', parameters: [
+        [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
+        ])
+        if(userInput==true)
+        {
+          stage ('Push to Dockerhub'){
       options {
         skipDefaultCheckout(true)
       }
@@ -67,6 +71,8 @@ stage ('Push to Dockerhub'){
           sh 'ci/push-docker.sh'
     }
       }
+        }
+
 
   }
   post {
