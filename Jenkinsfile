@@ -14,7 +14,6 @@ pipeline {
             sh 'echo "hello world"'
           }
         }
-node('host') {
     // some block
             stage('Build App') {
           agent {
@@ -29,7 +28,11 @@ node('host') {
             archiveArtifacts 'app/build/libs/'
           }
         }
-        stage('test app') {
+
+
+
+      }
+              stage('test app') {
           agent {
             docker {
               image 'gradle:jdk11'
@@ -42,10 +45,6 @@ node('host') {
             junit 'app/build/test-results/test/TEST-*.xml'
           }
         }
-}
-
-
-      }
     }
 
   }
