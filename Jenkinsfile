@@ -50,14 +50,7 @@ pipeline {
       }
       
     }
-    def userInput
-    userInput = input(
-        id: 'Proceed1', message: 'Continue?', parameters: [
-        [$class: 'BooleanParameterDefinition', defaultValue: true, description: '', name: 'Please confirm you agree with this']
-        ])
-        if(userInput==true)
-        {
-          stage ('Push to Dockerhub'){
+stage ('Push to Dockerhub'){
       options {
         skipDefaultCheckout(true)
       }
@@ -65,14 +58,17 @@ pipeline {
       DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
 }
     steps {
+        script {
+                    env.RELEASE_SCOPE = input message: 'User input required', ok: 'Release!',
+                            parameters: [choice(name: 'RELEASE_SCOPE', choices: 'patch\nminor\nmajor', description: 'What is the release scope?')]
+                }
+      
           unstash 'bin' //unstash the bin code
           sh 'ci/build-docker.sh'
           sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin' //login to docker hub with the credentials above
           sh 'ci/push-docker.sh'
     }
       }
-        }
-
 
   }
   post {
