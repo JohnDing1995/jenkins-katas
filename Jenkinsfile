@@ -1,6 +1,12 @@
 pipeline {
   agent any
   stages {
+    state('pull code') {
+      steps{
+      git branch: 'pipeline-editor', credentialsId: 'GitHub', url: 'git@github.com:JohnDing1995/jenkins-katas.git'
+      stash excludes: '.git/', name: 'code'
+      }
+    }
     stage('Say Hello') {
       parallel {
         stage('Say Hello') {
@@ -14,9 +20,10 @@ pipeline {
             docker {
               image 'gradle:jdk11'
             }
-
           }
+          options { skipDefaultCheckout(true) }
           steps {
+            unstash 'code'
             sh './ci/build-app.sh'
             archiveArtifacts 'app/build/libs/'
           }
