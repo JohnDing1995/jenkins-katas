@@ -54,4 +54,6 @@ node('host') {
 
             deleteDir() /* clean up our workspace */
         }
+  }
+  
 }
