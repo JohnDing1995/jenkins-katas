@@ -32,6 +32,8 @@ pipeline {
 
 
       }
+    
+    }
               stage('test app') {
           agent {
             docker {
@@ -45,7 +47,6 @@ pipeline {
             junit 'app/build/test-results/test/TEST-*.xml'
           }
         }
-    }
 
   }
   post {
