@@ -14,8 +14,9 @@ pipeline {
             sh 'echo "hello world"'
           }
         }
-
-        stage('Build App') {
+node('host') {
+    // some block
+            stage('Build App') {
           agent {
             docker {
               image 'gradle:jdk11'
@@ -28,9 +29,29 @@ pipeline {
             archiveArtifacts 'app/build/libs/'
           }
         }
+        stage('test app') {
+          agent {
+            docker {
+              image 'gradle:jdk11'
+            }
+          }
+          options { skipDefaultCheckout(true) }
+          steps {
+            unstash 'code'
+            sh './ci/unit-test-app.sh'
+            junit 'app/build/test-results/test/TEST-*.xml'
+          }
+        }
+}
+
 
       }
     }
 
   }
+  post {
+        always {
+
+            deleteDir() /* clean up our workspace */
+        }
 }
