@@ -50,6 +50,9 @@ pipeline {
       }
       
     }
+    timeout(time: 15, unit: "MINUTES") {
+    input message: 'Do you want to approve to push to DockerHub?', ok: 'Yes'
+}
 stage ('Push to Dockerhub'){
       options {
         skipDefaultCheckout(true)
