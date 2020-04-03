@@ -29,9 +29,10 @@ pipeline {
             unstash 'code'
             sh './ci/build-app.sh'
             archiveArtifacts 'app/build/libs/'
+            stash 'bin'
           }
         }
-                      stage('test app') {
+        stage('test app') {
           agent {
             docker {
               image 'gradle:jdk11'
@@ -57,7 +58,7 @@ stage ('Push to Dockerhub'){
       DOCKERCREDS = credentials('docker_login') //use the credentials just created in this stage
 }
     steps {
-          unstash 'code' //unstash the repository code
+          unstash 'bin' //unstash the repository code
           sh 'ci/build-docker.sh'
           sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin' //login to docker hub with the credentials above
           sh 'ci/push-docker.sh'
