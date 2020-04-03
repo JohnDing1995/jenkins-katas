@@ -28,13 +28,7 @@ pipeline {
             archiveArtifacts 'app/build/libs/'
           }
         }
-
-
-
-      }
-    
-    }
-              stage('test app') {
+                      stage('test app') {
           agent {
             docker {
               image 'gradle:jdk11'
@@ -47,6 +41,9 @@ pipeline {
             junit 'app/build/test-results/test/TEST-*.xml'
           }
         }
+      }
+    }
+
 
   }
   post {
